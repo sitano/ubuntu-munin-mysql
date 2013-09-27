@@ -14,6 +14,7 @@ match the older Ubuntu version.
 
 MODIFICATIONS
 ------------
+  * fix support for presence of INDIVIDUAL BUFFER POOL INFO section
   * fix to pending defauls
   * new InnoDB REDO Log age graph
   = tested on Percona Server MySQL 5.5.21-55-log
