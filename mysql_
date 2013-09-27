@@ -408,12 +408,40 @@ $graphs{innodb_log} = {
 	},
     },
     data_sources => [
-	{name => 'innodb_log_buffer_size', label  => 'Buffer Size',
+        {name => 'innodb_log_buffer_size', label  => 'Buffer Size',
 					   type   => 'GAUGE',
 					   draw   => 'AREA',
 					   colour => 'fafd9e'},
 	{name => 'ib_log_flush',           label => 'KB Flushed'},
 	{name => 'ib_log_written',         label => 'KB Written'},
+    ],
+};
+
+#---------------------------------------------------------------------
+
+$graphs{innodb_log_age} = {
+    config => {
+	global_attrs => {
+	    title  => 'InnoDB Log Age',
+	    vlabel => 'Log activity per ${graph_period}',
+	},
+	data_source_attrs => {
+	    draw => 'LINE1',
+	},
+    },
+    data_sources => [
+	{name => 'ib_log_max_age', 	label  => 'Max checkpoint age',
+					type   => 'GAUGE',
+					draw   => 'AREA'},
+	{name => 'ib_log_target_age',   label  => 'Checkpoint target age',
+					type   => 'GAUGE',
+					draw   => 'AREA'},
+	{name => 'ib_checkpoint_age',   label => 'Checkpoint age',
+					type => 'GAUGE',
+					draw   => 'AREA'},
+	{name => 'ib_modified_age',     label => 'Modified age',
+					type => 'GAUGE',
+					draw   => 'AREA'}
     ],
 };
 
@@ -857,7 +885,7 @@ sub show {
 
     for my $ds (@{$graph->{data_sources}}) {
 	printf "%s.value %s\n",
-	    clean_fieldname($ds->{name}), $data->{$ds->{name}};
+	    clean_fieldname($ds->{name}), ($data->{$ds->{name}} || 0);
     }
 
     return 0;
@@ -1075,6 +1103,7 @@ sub parse_innodb_status {
 	'SEMAPHORES'               => \&parse_semaphores,
 	'TRANSACTIONS'             => \&parse_transactions,
 	'BACKGROUND THREAD'        => \&skip,
+	'INDIVIDUAL BUFFER POOL INFO' => \&skip
     );
 
     skip_heading();
@@ -1221,7 +1250,6 @@ sub parse_insert_buffer_and_adaptive_hash_index {
     );
 }
 
-
 sub parse_log {
     parse_section(
 	sub {
@@ -1233,6 +1261,22 @@ sub parse_log {
 		$data->{ib_log_flush} = innodb_bigint($1, $2);
 		return 1;
 	    };
+	    m/\GMax checkpoint age\s+(\d+)\n/gc && do {
+                $data->{ib_log_max_age} = $1;
+                return 1;
+            };
+	    m/\GCheckpoint age target\s+(\d+)\n/gc && do {
+                $data->{ib_log_target_age} = $1;
+                return 1;
+            };
+	    m/\GModified age\s+(\d+)\n/gc && do {
+                $data->{ib_modified_age} = $1;
+                return 1;
+            };
+	    m/\GCheckpoint age\s+(\d+)\n/gc && do {
+                $data->{ib_checkpoint_age} = $1;
+                return 1;
+            };
 	    m/\G(\d+) log i\/o's done.*\n/gc && do {
 		$data->{ib_io_log} = $1;
 		return 1;
@@ -1287,3 +1331,4 @@ exit main() unless caller;
 
 
 1;
+
