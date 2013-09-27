@@ -16,7 +16,8 @@ MODIFICATIONS
 ------------
   * fix support for presence of INDIVIDUAL BUFFER POOL INFO section
   * fix to pending defauls
-  * new InnoDB REDO Log age graph
+  + new InnoDB REDO Log age graph
+  + Adaptive flushing sync limit, Adaptive flushing async limit
   = tested on Percona Server MySQL 5.5.21-55-log
 
 LINKS
@@ -25,4 +26,7 @@ LINKS
   * https://github.com/kjellm/munin-mysql
   * http://munin-monitoring.org/
   * http://www.percona.com/software/percona-server/
+
+  * http://www.mysqlperformanceblog.com/2011/09/18/disaster-mysql-5-5-flushing/
+  * http://www.mysqlperformanceblog.com/2012/02/17/the-relationship-between-innodb-log-checkpointing-and-dirty-buffer-pool-pages/
 

@@ -440,8 +440,12 @@ $graphs{innodb_log_age} = {
 					type => 'GAUGE',
 					draw   => 'AREA'},
 	{name => 'ib_modified_age',     label => 'Modified age',
-					type => 'GAUGE',
-					draw   => 'AREA'}
+					type  => 'GAUGE',
+					draw  => 'AREA'},
+	{name => 'ib_af_sync',		label => 'Adaptive flushing sync limit',
+					type  => 'GAUGE'},
+	{name => 'ib_af_async',		label => 'Adaptive flushing async limit',
+					type  => 'GAUGE'}
     ],
 };
 
@@ -1263,6 +1267,8 @@ sub parse_log {
 	    };
 	    m/\GMax checkpoint age\s+(\d+)\n/gc && do {
                 $data->{ib_log_max_age} = $1;
+		$data->{ib_af_sync} = $data->{innodb_log_file_size} * $data->{innodb_log_files_in_group} * 7 / 8;
+		$data->{ib_af_async} = $data->{innodb_log_file_size} * $data->{innodb_log_files_in_group} * 6 / 8;
                 return 1;
             };
 	    m/\GCheckpoint age target\s+(\d+)\n/gc && do {
