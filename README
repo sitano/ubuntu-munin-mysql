@@ -12,6 +12,10 @@ This version is based on the original Ubuntu 10.04 mysql_ plugin for Munin.
 The patch was taken from https://github.com/kjellm/munin-mysql and converted to 
 match the older Ubuntu version.
 
+WARNINGS
+------------
+  * mysql_dbsize can cause huge read impact on disk IO. Do not use it.
+
 MODIFICATIONS
 ------------
   * fix support for presence of INDIVIDUAL BUFFER POOL INFO section
@@ -26,7 +30,6 @@ LINKS
   * https://github.com/kjellm/munin-mysql
   * http://munin-monitoring.org/
   * http://www.percona.com/software/percona-server/
-
   * http://www.mysqlperformanceblog.com/2011/09/18/disaster-mysql-5-5-flushing/
   * http://www.mysqlperformanceblog.com/2012/02/17/the-relationship-between-innodb-log-checkpointing-and-dirty-buffer-pool-pages/
 
