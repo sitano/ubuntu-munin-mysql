@@ -346,9 +346,10 @@ $graphs{innodb_insert_buf} = {
 	},
     },
     data_sources => [
-	{name => 'ib_ibuf_inserts',    label => 'Inserts'},
-	{name => 'ib_ibuf_merged_rec', label => 'Merged Records'},
-	{name => 'ib_ibuf_merges',     label => 'Merges'},
+	{name => 'Innodb_ibuf_merged_inserts',      label => 'Inserts'},
+	{name => 'Innodb_ibuf_merged_deletes',      label => 'Deletes'},
+	{name => 'Innodb_ibuf_merged_delete_marks', label => 'Delete Marks'},
+	{name => 'Innodb_ibuf_merges',              label => 'Merges'},
     ],
 };
 
@@ -1098,8 +1099,7 @@ sub parse_innodb_status {
 
 	'BUFFER POOL AND MEMORY'   => \&parse_buffer_pool_and_memory,
 	'FILE I/O'                 => \&parse_file_io,
-	'INSERT BUFFER AND ADAPTIVE HASH INDEX'
-	    => \&parse_insert_buffer_and_adaptive_hash_index,
+	'INSERT BUFFER AND ADAPTIVE HASH INDEX' => \&skip,
 	'LATEST DETECTED DEADLOCK' => \&skip,
 	'LATEST FOREIGN KEY ERROR' => \&skip,
 	'LOG'                      => \&parse_log,
@@ -1240,20 +1240,6 @@ sub parse_file_io {
     );
 }
 
-
-sub parse_insert_buffer_and_adaptive_hash_index {
-    parse_section(
-	sub {
-	    m/\G(\d+) inserts, (\d+) merged recs, (\d+) merges\n/gc && do {
-		$data->{ib_ibuf_inserts}    = $1;
-		$data->{ib_ibuf_merged_rec} = $2;
-		$data->{ib_ibuf_merges}     = $3;
-		return 1;
-	    };
-	}
-    );
-}
-
 sub parse_log {
     parse_section(
 	sub {
@@ -1337,4 +1323,3 @@ exit main() unless caller;
 
 
 1;
-

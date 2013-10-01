@@ -19,7 +19,8 @@ WARNINGS
 MODIFICATIONS
 ------------
   * fix support for presence of INDIVIDUAL BUFFER POOL INFO section
-  * fix to pending defauls
+  * fix to pending defaults
+  * fix innodb_insert_buf graph to work with Percona 5.5
   + new InnoDB REDO Log age graph
   + Adaptive flushing sync limit, Adaptive flushing async limit
   = tested on Percona Server MySQL 5.5.21-55-log
